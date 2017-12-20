@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>获取QR</title>
+    <script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <style>
+        .btn-center {
+            text-align: center;
+            margin: 0 auto
+        }
+
+        .btn-style {
+            width: 50%;
+            height: 40px;
+        }
+
+        .qr-img {
+            margin-top: 20px;
+            width: 75%;
+        }
+    </style>
+    <script>
+        function task() {
+            var v = $('.label-ref').text()
+            $('.label-ref').text(v - 1)
+            if (v <= 0) {
+                getQr()
+                var v = $('.label-ref').text(30)
+            }
+        }
+        function getQr() {
+            $.get('http://localhost:5000/qr', function (data, status) {
+                if (data === 'error') {
+                    alert('获取二维码失败')
+                } else {
+                    $('.qr-img').attr('src', 'http://localhost:5000/' + data)
+                }
+            })
+        }
+        $(document).ready(function () {
+            getQr()
+            $("button").click(function () {
+                $('.label-ref').text(30)
+                getQr()
+            });
+
+            window.setInterval(task, 1000)
+        });
+    </script>
+</head>
+
+<body>
+    <div class="btn-center">
+        <img class="qr-img" src="" alt="测试">
+
+    </div>
+    <div class="btn-center">
+        <table class="btn-center">
+            <tr>
+                <td>
+                    <p>等待刷新:</p>
+                </td>
+                <td>
+                    <p class="label-ref">30</p>
+                </td>
+                <td>
+                    <p>秒</p>
+                </td>
+            </tr>
+        </table>
+        <button class="btn-style">点击获取二维码</button>
+    </div>
+</body>
+
+</html>
