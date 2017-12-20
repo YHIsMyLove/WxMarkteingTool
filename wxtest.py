@@ -107,9 +107,8 @@ def writeinfo(taskid):
                 print('写入' + i)
                 f.write(i + ' ')
 
-def removeQueueAndDelQRImage(taskid, msg):
-    writeinfo(taskid)
 
+def removeQueueAndDelQRImage(taskid, msg):
     Tqueue.remove(taskid)
     if os.path.exists(taskid):
         os.remove(taskid)
@@ -131,6 +130,7 @@ def action_getqrcode():
                     登录成功
                 """
                 if waitForLoginResult[0] == '200':
+                    writeinfo(taskid)
                     print('流程等待扫码->成功')
                     _redirect_uri = waitForLoginResult[1]
                     _base_uri = waitForLoginResult[2]
@@ -167,9 +167,10 @@ def action_getqrcode():
                                         msg, _base_uri, _pass_ticket, _BaseRequest)
                             print('准备下一个任务...')
                             Tqueue.remove(taskid)
-                            writeinfo(taskid)
+                            #
                             return
             elif waitForLoginResult[0] == '408':
+                writeinfo(taskid)
                 removeQueueAndDelQRImage(taskid, '二维码过期...删除...')
                 return
         print('结束??????????????????????????????????????????????????????????')
