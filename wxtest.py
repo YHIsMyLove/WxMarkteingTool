@@ -333,7 +333,7 @@ def sendMsg(MyUserName, ToUserName, msg, _base_uri, _pass_ticket, b_req, index):
         }
         json_obj = json.dumps(params, ensure_ascii=False).encode(
             'utf-8')  # ensure_ascii=False防止中文乱码
-        time.sleep(1)
+        time.sleep(.1)
         # print(url)
         # print(json_obj)
         # print('开始发送')
