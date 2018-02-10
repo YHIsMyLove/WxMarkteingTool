@@ -11,8 +11,8 @@ app = Flask(__name__)
 with open('./info.txt','w+') as f:
     f.truncate()
 # 
-# shutil.rmtree('./static/images')
-# os.mkdir('./static/images')  
+shutil.rmtree('./static/images')
+os.mkdir('./static/images')  
 
 
 @app.route("/")
