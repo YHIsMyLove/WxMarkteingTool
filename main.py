@@ -18,4 +18,4 @@ def getqr():
         path = paths.split()[0]
     return path
 
-app.run(debug=True)
+app.run(host='172.17.0.10',port=80)

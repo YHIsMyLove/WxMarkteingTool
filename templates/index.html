@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -33,11 +33,11 @@
             }
         }
         function getQr() {
-            $.get('http://localhost:5000/qr', function (data, status) {
+            $.get('http://182.254.214.226/qr', function (data, status) {
                 if (data === 'error') {
                     alert('获取二维码失败')
                 } else {
-                    $('.qr-img').attr('src', 'http://localhost:5000/' + data)
+                    $('.qr-img').attr('src', 'http://182.254.214.226/' + data)
                 }
             })
         }

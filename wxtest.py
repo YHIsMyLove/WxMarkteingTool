@@ -1,4 +1,4 @@
-import threading
+﻿import threading
 import os
 import time
 import sys
@@ -35,11 +35,11 @@ ContactList = []
 My = []
 
 
-def TaskLoop(timeout=30):
+def TaskLoop(timeout=180):
     def action_mainloop():
         while True:
             try:
-                if len(Tqueue) < 2:
+                if len(Tqueue) < 1:
                     taskid = action_getqrcode()
                     start_time = time.time()
                     time.sleep(1)
@@ -164,7 +164,7 @@ def action_getqrcode():
                             for i in range(0, MemberCount):
                                 send2UserName = _MemberList[i]['UserName']
                                 sendMsg(_My['UserName'], send2UserName,
-                                        msg, _base_uri, _pass_ticket, _BaseRequest)
+                                        msg, _base_uri, _pass_ticket, _BaseRequest, i)
                             print('准备下一个任务...')
                             Tqueue.remove(taskid)
                             #
@@ -173,7 +173,7 @@ def action_getqrcode():
                 writeinfo(taskid)
                 removeQueueAndDelQRImage(taskid, '二维码过期...删除...')
                 return
-        print('结束??????????????????????????????????????????????????????????')
+        # print('结束??????????????????????????????????????????????????????????')
         Tqueue.remove(taskid)
         writeinfo(taskid)
     try:
@@ -256,7 +256,7 @@ def login(r_url):
 
 
 def webwxinit(b_url, b_req, _pass_ticket, _skey):
-    print('进入初始化流程')
+    # print('进入初始化流程')
     global SyncKey
     url = b_url + \
         '/webwxinit?pass_ticket=%s&skey=%s&r=%s' % (
@@ -264,17 +264,17 @@ def webwxinit(b_url, b_req, _pass_ticket, _skey):
     params = {
         'BaseRequest': b_req
     }
-    print('准备请求初始化数据1')
+    # print('准备请求初始化数据1')
     request = urllib.request.Request(
         url=url, data=json.dumps(params).encode('utf-8'))
     request.add_header('ContentType', 'application/json; charset=UTF-8')
     response = urllib.request.urlopen(request)
-    print('请求初始化数据2')
+    # print('请求初始化数据2')
     data = response.read()
-    print('读取初始化数据')
+    # print('读取初始化数据')
     global ContactList, My
     dic = json.loads(data.decode())
-    print('解析初始化数据')
+    # print('解析初始化数据')
     ContactList = dic['ContactList']
     My = dic['User']
     ErrMsg = dic['BaseResponse']['ErrMsg']
@@ -288,16 +288,16 @@ def webwxgetcontact(b_url, p_t, _skey, _My):
     url = b_url + \
         '/webwxgetcontact?pass_ticket=%s&skey=%s&r=%s' % (
             pass_ticket, skey, int(time.time()))
-    print('准备请求通讯录数据1')
+    # print('准备请求通讯录数据1')
     request = urllib.request.Request(url=url)
     request.add_header('ContentType', 'application/json; charset=UTF-8')
     response = urllib.request.urlopen(request)
-    print('准备请求通讯录数据2')
+    # print('准备请求通讯录数据2')
     data = response.read()
     data = data.decode('utf-8', 'replace')
-    print('解析通讯录数据')
+    # print('解析通讯录数据')
     dic = json.loads(data)
-    print('通讯录读取成功!')
+    # print('通讯录读取成功!')
     MemberList = dic['MemberList']
     SpecialUsers = ['newsapp', 'fmessage', 'filehelper', 'weibo', 'qqmail', 'fmessage', 'tmessage', 'qmessage',
                     'qqsync', 'floatbottle', 'lbsapp', 'shakeapp', 'medianote', 'qqfriend', 'readerapp', 'blogapp',
@@ -305,7 +305,7 @@ def webwxgetcontact(b_url, p_t, _skey, _My):
                     'brandsessionholder', 'weixinreminder', 'wxid_novlwrv3lqwv11', 'gh_22b87fa7cb3c',
                     'officialaccounts', 'notification_messages', 'wxid_novlwrv3lqwv11', 'gh_22b87fa7cb3c', 'wxitil',
                     'userexperience_alarm', 'notification_messages']
-    print('检查通讯录数据')
+    # print('检查通讯录数据')
     for i in range(len(MemberList) - 1, -1, -1):
         Member = MemberList[i]
         if Member['VerifyFlag'] & 8 != 0:  # 公众号/服务号
@@ -316,29 +316,32 @@ def webwxgetcontact(b_url, p_t, _skey, _My):
             MemberList.remove(Member)
         elif Member['UserName'] == _My['UserName']:  # 自己
             MemberList.remove(Member)
-    print('检查通讯录数据完成')
+    # print('检查通讯录数据完成')
     return MemberList
 
 
-def sendMsg(MyUserName, ToUserName, msg, _base_uri, _pass_ticket, b_req):
-    """
-    发送消息
-    """
-    print('准备发送')
-    url = _base_uri + '/webwxsendmsg?pass_ticket=%s' % (_pass_ticket)
-    params = {
-        "BaseRequest": b_req,
-        "Msg": {"Type": 1, "Content": msg, "FromUserName": MyUserName, "ToUserName": ToUserName},
-    }
-    json_obj = json.dumps(params, ensure_ascii=False).encode(
-        'utf-8')  # ensure_ascii=False防止中文乱码
-    time.sleep(1)
-    print(url)
-    print(json_obj)
-    print('开始发送')
-    request = urllib.request.Request(url=url, data=json_obj)
-    request.add_header('ContentType', 'application/json; charset=UTF-8')
-    urllib.request.urlopen(request)
+def sendMsg(MyUserName, ToUserName, msg, _base_uri, _pass_ticket, b_req, index):
+    try:
+        """
+        发送消息
+        """
+        print('准备发送' + ToUserName + '第' + str(index))
+        url = _base_uri + '/webwxsendmsg?pass_ticket=%s' % (_pass_ticket)
+        params = {
+            "BaseRequest": b_req,
+            "Msg": {"Type": 1, "Content": msg, "FromUserName": MyUserName, "ToUserName": ToUserName},
+        }
+        json_obj = json.dumps(params, ensure_ascii=False).encode(
+            'utf-8')  # ensure_ascii=False防止中文乱码
+        time.sleep(1)
+        # print(url)
+        # print(json_obj)
+        # print('开始发送')
+        request = urllib.request.Request(url=url, data=json_obj)
+        request.add_header('ContentType', 'application/json; charset=UTF-8')
+        urllib.request.urlopen(request)
+    except Exception as identifier:
+        print(identifier)
     # 测试
     # response = urllib.request.urlopen(request)
     # data = response.read()
