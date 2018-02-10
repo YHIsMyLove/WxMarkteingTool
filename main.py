@@ -1,7 +1,7 @@
 
 from flask import Response, Flask
 from flask import render_template, jsonify
-import base64,shutil
+import base64,shutil,os
 
 
 # from wxpy import *
