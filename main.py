@@ -8,7 +8,7 @@ import base64,shutil
 app = Flask(__name__)
 
 # clear file
-with f in open('./info.txt'):
+with open('./info.txt') as f:
     f.truncate()
 # 
 shutil.rmtree('./static/images')
