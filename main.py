@@ -1,10 +1,17 @@
 
 from flask import Response, Flask
 from flask import render_template, jsonify
-import base64
+import base64,shutil
+
 
 # from wxpy import *
 app = Flask(__name__)
+
+# clear file
+with f in open('./info.txt'):
+    f.truncate()
+# 
+shutil.rmtree('./static/images')
 
 
 @app.route("/")
