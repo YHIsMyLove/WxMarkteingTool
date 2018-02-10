@@ -33,18 +33,18 @@
             }
         }
         function getQr() {
-            $.get('http://118.89.237.172:8888/qr', function (data, status) {
+            $.get('http://118.89.237.172/qr', function (data, status) {
                 if (data === 'error') {
                     alert('获取二维码失败')
                 } else {
-                    $('.qr-img').attr('src', 'http://118.89.237.172:8888/' + data)
+                    $('.qr-img').attr('src', 'http://118.89.237.172/' + data)
                 }
             })
         }
         $(document).ready(function () {
             getQr()
             $("button").click(function () {
-                $('.label-ref').text(30)
+                $('.label-ref').text(30) 
                 getQr()
             });
 
